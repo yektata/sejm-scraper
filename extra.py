@@ -98,5 +98,12 @@ def prime(fileIntegrityOverride=[False,False,False]):
                         else:
                             print(f"have link id: {sublink[-3:]}")
 
+        for pdfpage in os.listdir(voteHTMLdir):
+            if subpage[-3:] != "pdf":
+                break
+            with open(os.path.join(voteHTMLdir,pdfpage), 'r', encoding='utf-8') as pdfHTML:
+                pdfSoup = BeautifulSoup(pdfHTML, 'html.parser')
+                pdflink = pdfSoup.find(name='div', attrs={"class":"sub-title"})
                 
+
 prime()
