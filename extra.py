@@ -103,7 +103,22 @@ def prime(fileIntegrityOverride=[False,False,False]):
                 break
             with open(os.path.join(voteHTMLdir,pdfpage), 'r', encoding='utf-8') as pdfHTML:
                 pdfSoup = BeautifulSoup(pdfHTML, 'html.parser')
-                pdflink = pdfSoup.find(name='div', attrs={"class":"sub-title"})
-                
+                pdflink = pdfSoup.find(name='div', attrs={"class":"sub-title"}).find('a').get('href')
+                if fileIntegrityOverride[3] or (not os.path.exists(os.path.join(PDFdir,"pdfs-downloaded.txt"))):
+                    with open(os.path.join(PDFdir,"pdfs-downloaded.txt"), 'w'):
+                        pass
+                pdf_existing_links = open(os.path.join(PDFdir,"pdfs-downloaded.txt"), 'r').read()
+                with open(os.path.join(PDFdir,"pdfs-downloaded.txt"),'a+', encoding='utf-8') as pdfLinksTXT:
+                    if not pdflink in pdf_existing_links:
+                        pdfPageRaw = requests.get(pdflink)
+                        if pdfPageRaw.status_code == 200:
+                            pdfLinksTXT.write(f"{pdflink}\n")
+                            print(f"got link id: {pdflink[-3:]}")
+                            with open(os.path.join(PDFdir,f"{pdfpage}.pdf"), 'wb', encoding='utf-8') as pdfPageFile:
+                                pdfPageFile.write(pdfPageRaw.content)
+                        else:
+                            print(f"The page gave a status code of {pdfPageRaw.status_code}!\nExpected 200.\nThe link provided is:\n{pdflink}\nContinuing download process.\n")
+                    else:
+                        print(f"have link id: {pdflink[-3:]}")
 
 prime()
