@@ -120,6 +120,6 @@ def prime(fileIntegrityOverride=[False,False,False,False],forceHTMLNoChecks=Fals
                         else:
                             print(f"The page gave a status code of {pdfPageRaw.status_code}!\nExpected 200.\nThe link provided is:\n{pdflink}\nContinuing download process.\n")
                     else:
-                        print(f"have link id: {pdflink[-3:]}")
+                        print(f"have link: {pdflink}")
 
 prime(forceHTMLNoChecks=True)
